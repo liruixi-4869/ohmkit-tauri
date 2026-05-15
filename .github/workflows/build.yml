@@ -15,12 +15,15 @@ jobs:
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
             ext: ""
+            platform: linux
           - target: x86_64-pc-windows-msvc
             os: windows-latest
             ext: ".exe"
+            platform: windows
           - target: aarch64-apple-darwin
             os: macos-latest
             ext: ""
+            platform: macos
 
     runs-on: ${{ matrix.os }}
 
@@ -39,28 +42,19 @@ jobs:
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
 
-      - name: Package (Linux)
-        if: runner.os == 'Linux'
+      - name: Package
+        shell: bash
         run: |
           mkdir -p release
-          cp target/${{ matrix.target }}/release/ohmkit-tauri release/
-          tar -czf ohmkit-tauri-linux.tar.gz -C release .
-
-      - name: Package (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          mkdir release
-          cp target/${{ matrix.target }}/release/ohmkit-tauri.exe release/
-          Compress-Archive -Path release/* -DestinationPath ohmkit-tauri-windows.zip
-
-      - name: Package (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          mkdir -p release
-          cp target/${{ matrix.target }}/release/ohmkit-tauri release/
-          tar -czf ohmkit-tauri-macos.tar.gz -C release .
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            cp target/${{ matrix.target }}/release/ohmkit-tauri${{ matrix.ext }} release/
+            7z a ohmkit-tauri-windows.zip ./release/*
+          else
+            cp target/${{ matrix.target }}/release/ohmkit-tauri${{ matrix.ext }} release/
+            tar -czf ohmkit-tauri-${{ matrix.platform }}.tar.gz -C release .
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ohmkit-tauri-${{ runner.os }}
-          path: ohmkit-tauri-*
+          name: ohmkit-tauri-${{ matrix.platform }}
+          path: ohmkit-tauri-${{ matrix.platform }}.*
