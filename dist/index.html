@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ohmkit — 电阻工具箱</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header class="titlebar">
+    <h1>ohmkit</h1>
+    <span class="subtitle">电阻工具箱 · 精确分数运算</span>
+  </header>
+
+  <nav class="tabs" id="tab-nav">
+    <button class="tab active" data-tab="expr">串并联</button>
+    <button class="tab" data-tab="delta">Δ-Y 变换</button>
+    <button class="tab" data-tab="bridge">桥式电路</button>
+    <button class="tab" data-tab="color">色环电阻</button>
+  </nav>
+
+  <section class="panel active" id="panel-expr">
+    <div class="hint">+ 串联 &nbsp; || 并联（优先级高于 +）&nbsp; 括号任意嵌套</div>
+    <div class="input-row">
+      <input id="expr-input" type="text" placeholder="例: 4+((9||27)+(1||27))||27" autofocus>
+      <button class="primary" id="btn-calc-expr">计算</button>
+    </div>
+    <div class="quick-btns" id="quick-btns">
+      <button>+</button><button>||</button><button>(</button><button>)</button>
+    </div>
+    <div class="examples" id="examples">
+      示例：
+      <a>10+20+30</a><a>10||20||30</a><a>4+5||10</a><a>4+((9||27)+(1||27))||27</a><a>4.7||10.5</a>
+    </div>
+    <div class="result" id="expr-result"></div>
+  </section>
+
+  <section class="panel" id="panel-delta">
+    <div class="card">
+      <div class="card-title">Δ → Y &nbsp;（输入 R23 R13 R12）</div>
+      <div class="input-row small">
+        <label>R23 <input id="d23" type="text" placeholder="0"></label>
+        <label>R13 <input id="d13" type="text" placeholder="0"></label>
+        <label>R12 <input id="d12" type="text" placeholder="0"></label>
+        <button class="primary" id="btn-delta">Δ→Y</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Y → Δ &nbsp;（输入 R1 R2 R3）</div>
+      <div class="input-row small">
+        <label>R1 <input id="y1" type="text" placeholder="0"></label>
+        <label>R2 <input id="y2" type="text" placeholder="0"></label>
+        <label>R3 <input id="y3" type="text" placeholder="0"></label>
+        <button class="primary" id="btn-wye">Y→Δ</button>
+      </div>
+    </div>
+    <div class="result" id="delta-result"></div>
+  </section>
+
+  <section class="panel" id="panel-bridge">
+    <pre class="diagram">
+       ┌──R1──C──R3──┐
+       │      │      │
+    A──┤      R5     ├──B
+       │      │      │
+       └──R2──D──R4──┘
+    </pre>
+    <div class="input-row small">
+      <label>R1 <input id="br1" type="text" placeholder="0"></label>
+      <label>R2 <input id="br2" type="text" placeholder="0"></label>
+      <label>R3 <input id="br3" type="text" placeholder="0"></label>
+      <label>R4 <input id="br4" type="text" placeholder="0"></label>
+      <label>R5 <input id="br5" type="text" placeholder="0"></label>
+      <button class="primary" id="btn-bridge">求解</button>
+    </div>
+    <div class="result" id="bridge-result"></div>
+  </section>
+
+  <section class="panel" id="panel-color">
+    <div class="card">
+      <div class="card-title">色环 → 阻值</div>
+      <div class="input-row">
+        <input id="color-bands" type="text" placeholder="例: red violet yellow gold">
+        <button class="primary" id="btn-decode">解码</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">阻值 → 色环（E24 系列）</div>
+      <div class="input-row small">
+        <label>Ω <input id="color-val" type="text" placeholder="4700"></label>
+        <button class="primary" id="btn-encode">编码</button>
+      </div>
+    </div>
+    <div class="result" id="color-result"></div>
+  </section>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
